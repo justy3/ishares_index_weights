@@ -52,7 +52,7 @@ def process_json_file(file_path):
 
 def save_single_file(df, output_dir):
 	"""Save all data as a single CSV file"""
-	filepath = output_dir / "sp500_historical.csv"
+	filepath = output_dir / "historical.csv"
 	df.to_csv(filepath, index=False)
 	logger.info(f"Saved combined CSV to {filepath}")
 
@@ -75,16 +75,17 @@ def save_daily_files(df, output_dir):
 		date_df = date_df[columns]
 		
 		# Convert date to filename format
-		filename = f"sp500_{date.replace('-', '')}.csv"
+		filename = f"{date.replace('-', '')}.csv"
 		date_df.to_csv(daily_dir / filename, index=False)
 	
 	logger.info(f"Saved {len(df['date'].unique())} daily files to {daily_dir}")
 
 def main():
 	# Input and output paths
-	input_dir = Path("ivv_constituents")  # Update this to your input directory
-	output_dir = Path("processed_data")
-	output_dir.mkdir(exist_ok=True)
+	INDEX_NAME = "spx500"
+	input_dir = Path(f"constituents/{INDEX_NAME}/")  # Update this to your input directory
+	output_dir = Path(f"processed_data/{INDEX_NAME}/")
+	output_dir.mkdir(exist_ok=True, parents=True)
 
 	# Process all JSON files
 	all_holdings = []

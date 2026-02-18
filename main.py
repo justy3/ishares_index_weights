@@ -15,8 +15,9 @@ def format_date(date):
 	return date.strftime("%Y%m%d")
 
 index_to_url = {
-	"spx500" : f"https://www.ishares.com/us/products/239726/ishares-core-sp-500-etf/1467271812596.ajax",
-	"nikkei400" : f"https://www.ishares.com/us/products/239831/ishares-japan-largecap-etf/1467271812596.ajax",
+	# https://www.ishares.com/us/products/239726/ishares-core-sp-500-etf/1467271812596.ajax?tab=all&fileType=json&asOfDate=20260130&_=1771437567920
+	"spx500"	: f"https://www.ishares.com/us/products/239726/ishares-core-sp-500-etf/1467271812596.ajax",
+	"nikkei400"	: f"https://www.ishares.com/us/products/239831/ishares-japan-largecap-etf/1467271812596.ajax",
 }
 
 def get_constituents(date_str, index_name="spx500"):
@@ -30,7 +31,7 @@ def get_constituents(date_str, index_name="spx500"):
 		"tab": "all",
 		"fileType": "json",
 		"asOfDate": date_str,
-		"_": "1730362062597"
+		"_": "1771437567922"
 	}
 	headers = {
 		"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
@@ -69,18 +70,27 @@ def get_constituents(date_str, index_name="spx500"):
 
 def save_to_file(date_str, data, index_name):
 	"""Save constituent data to a JSON file"""
-	output_dir = Path(f"ivv_constituents/{index_name}/")
-	output_dir.mkdir(exist_ok=True)
-	
+	output_dir = Path(f"constituents/{index_name}/")
+	output_dir.mkdir(exist_ok=True, parents=True)	
 	output_file = output_dir / f"{date_str}.json"
+
 	with open(output_file, 'w', encoding='utf-8') as f:
 		json.dump(data, f, indent=2)
 
 	qt.log.info(f"saved data for {date_str}")
 
-def process_date(date_str):
-	index_name = "spx500"
+def process_date(date_str, index_name="spx500"):
 	"""Process a single date - fetch and save if data exists"""
+
+	output_dir = Path(f"constituents/{index_name}/")
+	output_dir.mkdir(exist_ok=True, parents=True)	
+	output_file = output_dir / f"{date_str}.json"
+
+	if output_file.exists():
+		qt.log.info(f"data for {date_str} already exists, skipping")
+		return date_str, True
+
+	# if not, fetch data
 	data = get_constituents(date_str, index_name)
 
 	if data is not None:
@@ -92,8 +102,9 @@ def process_date(date_str):
 
 def main():
 	# Start date and configurations
-	start_date = datetime(2015, 1, 1)
-	end_date = datetime(2015, 2, 7)
+	INDEX_NAME = "spx500"
+	start_date = datetime(2021, 2, 1)
+	end_date = datetime(2026, 3, 1)
 	# end_date = datetime.now()
 	max_workers = 5  # Limit concurrent requests
 	
@@ -108,9 +119,9 @@ def main():
 	# Process dates in parallel with throttling
 	successful_dates = 0
 	total_dates = len(dates_to_process)
-	
+
 	with ThreadPoolExecutor(max_workers=max_workers) as executor:
-		future_to_date = {executor.submit(process_date, date_str): date_str 
+		future_to_date = {executor.submit(process_date, date_str, index_name=INDEX_NAME): date_str 
 						 for date_str in dates_to_process}
 		
 		for future in as_completed(future_to_date):
