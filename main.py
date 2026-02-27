@@ -18,6 +18,9 @@ index_to_url = {
 	# https://www.ishares.com/us/products/239726/ishares-core-sp-500-etf/1467271812596.ajax?tab=all&fileType=json&asOfDate=20260130&_=1771437567920
 	"spx500"	: f"https://www.ishares.com/us/products/239726/ishares-core-sp-500-etf/1467271812596.ajax",
 	"nikkei400"	: f"https://www.ishares.com/us/products/239831/ishares-japan-largecap-etf/1467271812596.ajax",
+	# "msci_us_sri" :	f"https://www.ishares.com/uk/individual/en/products/283565/ishares-sustainable-msci-usa-sri-ucits-etf"
+	# https://www.ishares.com/uk/individual/en/products/283565/ishares-sustainable-msci-usa-sri-ucits-etf/1506575576011.ajax?tab=all&fileType=json&asOfDate=20251231&_=1772181530681
+	"msci_us_sri" : f"https://www.ishares.com/uk/individual/en/products/283565/ishares-sustainable-msci-usa-sri-ucits-etf/1506575576011.ajax"
 }
 
 def get_constituents(date_str, index_name="spx500"):
@@ -31,7 +34,8 @@ def get_constituents(date_str, index_name="spx500"):
 		"tab": "all",
 		"fileType": "json",
 		"asOfDate": date_str,
-		"_": "1771437567922"
+		# "_": "1771437567922",
+		"_" : "1772181530681",
 	}
 	headers = {
 		"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
@@ -102,9 +106,9 @@ def process_date(date_str, index_name="spx500"):
 
 def main():
 	# Start date and configurations
-	INDEX_NAME = "spx500"
-	start_date = datetime(2021, 2, 1)
-	end_date = datetime(2026, 3, 1)
+	INDEX_NAME = "msci_us_sri"
+	start_date = datetime(2025, 4, 1)
+	end_date = datetime(2025, 6, 30)
 	# end_date = datetime.now()
 	max_workers = 5  # Limit concurrent requests
 	
