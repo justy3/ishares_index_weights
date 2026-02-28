@@ -82,7 +82,7 @@ def save_daily_files(df, output_dir):
 
 def main():
 	# Input and output paths
-	INDEX_NAME = "msci_us_sri"
+	INDEX_NAME = "msci_us"
 	input_dir = Path(f"constituents/{INDEX_NAME}/")  # Update this to your input directory
 	output_dir = Path(f"processed_data/{INDEX_NAME}/")
 	output_dir.mkdir(exist_ok=True, parents=True)
