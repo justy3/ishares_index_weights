@@ -20,6 +20,8 @@ index_to_url = {
 	"nikkei400"	: f"https://www.ishares.com/us/products/239831/ishares-japan-largecap-etf/1467271812596.ajax",
 	"msci_us_sri" : f"https://www.ishares.com/uk/individual/en/products/283565/ishares-sustainable-msci-usa-sri-ucits-etf/1506575576011.ajax",
 	"msci_us"	:	f"https://www.ishares.com/us/products/239693/ishares-msci-usa-etf/1467271812596.ajax", # 1772189605315
+	"msci_india" : f"https://www.ishares.com/us/products/239659/ishares-msci-india-etf/1467271812596.ajax", # 1775047358573",
+	"msci_sc_india" : f"https://www.ishares.com/us/products/239660/ishares-msci-india-smallcap-etf/1467271812596.ajax"
 }
 
 def get_constituents(date_str, index_name="spx500"):
@@ -105,9 +107,9 @@ def process_date(date_str, index_name="spx500"):
 
 def main():
 	# Start date and configurations
-	INDEX_NAME = "msci_us"
-	start_date = datetime(2025, 4, 1)
-	end_date = datetime(2025, 6, 30)
+	INDEX_NAME = "msci_sc_india"
+	start_date = datetime(2026, 1, 1)
+	end_date = datetime(2026, 3, 31)
 	# end_date = datetime.now()
 	max_workers = 5  # Limit concurrent requests
 	
