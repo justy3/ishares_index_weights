@@ -14,13 +14,26 @@ def process_holding(holding, date):
 		# Skip if not equity
 		if holding[3] != 'Equity':
 			return None
-			
+
 		return {
 			'date': date,
 			'ticker': holding[0],
 			'name': holding[1],
 			'sector': holding[2],
-			'weight': holding[5].get('raw', 0) if isinstance(holding[5], dict) else 0
+			'asset_class': holding[3],
+			'market_value': holding[4].get('raw', 0) if isinstance(holding[4], dict) else 0,
+			'weight': holding[5].get('raw', 0) if isinstance(holding[5], dict) else 0,
+			'notional_value': holding[6].get('raw', 0) if isinstance(holding[6], dict) else 0,
+			'quantity': holding[7].get('raw', 0) if isinstance(holding[7], dict) else 0,
+			'cusip': holding[8],
+			'isin': holding[9],
+			'sedol': holding[10],
+			'price': holding[11].get('raw', 0) if isinstance(holding[11], dict) else 0,
+			'country': holding[12],
+			'exchange': holding[13],
+			'currency': holding[14],
+			'fx': holding[15],
+			'accrual_date': holding[16]
 		}
 	except (IndexError, AttributeError) as e:
 		logger.warning(f"Error processing holding: {e}")
@@ -71,7 +84,11 @@ def save_daily_files(df, output_dir):
 		date_df['rank'] = range(1, len(date_df) + 1)
 		
 		# Reorder columns
-		columns = ['rank', 'ticker', 'name', 'sector', 'weight']
+		columns = [
+			'rank', 'ticker', 'name', 'sector', 'asset_class', 'market_value', 'weight', 
+			'notional_value', 'quantity', 'cusip', 'isin', 'sedol', 'price', 
+			'country', 'exchange', 'currency', 'fx', 'accrual_date'
+			]
 		date_df = date_df[columns]
 		
 		# Convert date to filename format
@@ -82,7 +99,7 @@ def save_daily_files(df, output_dir):
 
 def main():
 	# Input and output paths
-	INDEX_NAME = "msci_sc_india"
+	INDEX_NAME = "msci_acwi"
 	input_dir = Path(f"constituents/{INDEX_NAME}/")  # Update this to your input directory
 	output_dir = Path(f"processed_data/{INDEX_NAME}/")
 	output_dir.mkdir(exist_ok=True, parents=True)
@@ -110,7 +127,11 @@ def main():
 	df['rank'] = df.groupby('date')['weight'].rank(method='min', ascending=False)
 	
 	# Reorder columns
-	columns = ['date', 'rank', 'ticker', 'name', 'sector', 'weight']
+	columns = [
+			'date', 'rank', 'ticker', 'name', 'sector', 'asset_class', 'market_value', 'weight', 
+			'notional_value', 'quantity', 'cusip', 'isin', 'sedol', 'price', 
+			'country', 'exchange', 'currency', 'fx', 'accrual_date'
+			]
 	df = df[columns]
 	
 	# Save both formats
